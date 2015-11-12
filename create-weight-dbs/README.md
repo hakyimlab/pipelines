@@ -1,5 +1,4 @@
-# Name of pipeline
-create-weight-dbs
+##create-weight-dbs
 
 ## Description
 Generates PredictDB sqlite dbs using weights calculated by generate-prediction-models. These dbs are used for gene expression prediction by PrediXcan and for gene-level association by MetaXcan.
@@ -34,11 +33,12 @@ This takes all files in the input folder and creates dbs
 > generate_sqlite_dbs.py
 
 ## Working Example
-- Download [link]()
-- Untar the file ()
+- Download [link](https://s3.amazonaws.com/imlab-open/Webdata/Working-Examples/create-weight-dbs-example.tar.gz)
+- Untar the file (`>  tar -xzvf create-weight-dbs-example.tar.gz`)
 - cd to the untarred folder
 - Run the following line
+
 > generate_sqlite_dbs.py
 
 ## Options
-No options.
+None
