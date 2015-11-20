@@ -5,7 +5,6 @@ TARGET_DIR = 'output'
 RESULTS_DIR = '/allResults'
 BETAS_DIR = '/allBetas'
 
-
 import gzip
 import os
 import sys
@@ -44,7 +43,7 @@ def generate_weights_file():
             else:
                 yield dict(zip(header, map(upconvert, line.strip().split())))
 
-    def source_files(source_dir=SOURCE_DIR + BETAS_DIR):
+    def source_files(source_dir=os.path.join(SOURCE_DIR, BETAS_DIR)):
         "List all relevant source files"
         for x in smart_list(source_dir, including='.allBetas.'):
             yield os.path.join(source_dir, x)
@@ -132,7 +131,7 @@ def add_extra_data():
                     if 'alpha' in ret:
                         yield ret
 
-    def source_files(source_dir=SOURCE_DIR+RESULTS_DIR):
+    def source_files(source_dir=os.path.join(SOURCE_DIR,RESULTS_DIR)):
         "List all relevant source files"
         for x in smart_list(source_dir, including='.allResults.txt'):
             yield os.path.join(source_dir, x)
@@ -195,5 +194,30 @@ def add_extra_data():
 
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Create a model database from input files.')
+
+    parser.add_argument("--input_folder",
+                        help="Folder containing -allBetas- and -allResults- input data",
+                        default="input")
+
+    parser.add_argument("--results_sub_folder",
+                        help="Subfolder with -allResults-",
+                        default="allResults")
+
+    parser.add_argument("--betas_sub_folder",
+                        help="Subfolder with -allBetas-",
+                        default="allBetas")
+
+    parser.add_argument("--output_folder",
+                        help="higher level output folder",
+                        default="output")
+
+    args = parser.parse_args()
+    SOURCE_DIR = args.input_folder
+    RESULTS_DIR = args.results_sub_folder
+    BETAS_DIR = args.betas_sub_folder
+    TARGET_DIR = args.output_folder
+
     generate_weights_file()
     add_extra_data()
