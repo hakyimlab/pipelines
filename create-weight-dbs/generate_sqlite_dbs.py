@@ -2,6 +2,9 @@
 
 SOURCE_DIR = 'input'
 TARGET_DIR = 'output'
+RESULTS_DIR = '/allResults'
+BETAS_DIR = '/allBetas'
+
 
 import gzip
 import os
@@ -41,7 +44,7 @@ def generate_weights_file():
             else:
                 yield dict(zip(header, map(upconvert, line.strip().split())))
 
-    def source_files(source_dir=SOURCE_DIR):
+    def source_files(source_dir=SOURCE_DIR + BETAS_DIR):
         "List all relevant source files"
         for x in smart_list(source_dir, including='.allBetas.'):
             yield os.path.join(source_dir, x)
@@ -129,7 +132,7 @@ def add_extra_data():
                     if 'alpha' in ret:
                         yield ret
 
-    def source_files(source_dir=SOURCE_DIR):
+    def source_files(source_dir=SOURCE_DIR+RESULTS_DIR):
         "List all relevant source files"
         for x in smart_list(source_dir, including='.allResults.txt'):
             yield os.path.join(source_dir, x)
