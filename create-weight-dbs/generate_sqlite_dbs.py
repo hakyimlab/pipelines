@@ -4,6 +4,8 @@ SOURCE_DIR = 'input'
 TARGET_DIR = 'output'
 RESULTS_DIR = '/allResults'
 BETAS_DIR = '/allBetas'
+BETAS_INCLUDE_CLAUSE = ".allBetas."
+RESULTS_INCLUDE_CLAUSE = ".allResults."
 
 import gzip
 import os
@@ -45,7 +47,7 @@ def generate_weights_file():
 
     def source_files(source_dir=os.path.join(SOURCE_DIR, BETAS_DIR)):
         "List all relevant source files"
-        for x in smart_list(source_dir, including='.allBetas.'):
+        for x in smart_list(source_dir, including=BETAS_INCLUDE_CLAUSE):
             yield os.path.join(source_dir, x)
 
     class DB:
@@ -133,7 +135,7 @@ def add_extra_data():
 
     def source_files(source_dir=os.path.join(SOURCE_DIR,RESULTS_DIR)):
         "List all relevant source files"
-        for x in smart_list(source_dir, including='.allResults.txt'):
+        for x in smart_list(source_dir, including=RESULTS_INCLUDE_CLAUSE):
             yield os.path.join(source_dir, x)
 
     class DB:
@@ -213,11 +215,21 @@ if __name__ == '__main__':
                         help="higher level output folder",
                         default="output")
 
+    parser.add_argument("--betas_include_clause",
+                        help="Pattern for betas file name to adhere to",
+                        default=".allBetas.")
+
+    parser.add_argument("--results_include_clause",
+                        help="Pattern for results file name to adhere to",
+                        default=".allResults.")
+
     args = parser.parse_args()
     SOURCE_DIR = args.input_folder
     RESULTS_DIR = args.results_sub_folder
     BETAS_DIR = args.betas_sub_folder
     TARGET_DIR = args.output_folder
+    BETAS_INCLUDE_CLAUSE = args.betas_include_clause
+    RESULTS_INCLUDE_CLAUSE = args.results_include_clause
 
     generate_weights_file()
     add_extra_data()
