@@ -7,6 +7,9 @@ BETAS_DIR = '/allBetas'
 BETAS_INCLUDE_CLAUSE = ".allBetas."
 RESULTS_INCLUDE_CLAUSE = ".allResults."
 
+BETA_HEADER_TOKENS = {"gene", "rsid", "ref", "alt", "beta", "alpha"}
+RESULTS_HEADER_TOKENS = {"gene", "alpha", "cvm", "lambda.iteration", "lambda.min", "n.snps", "R2", "pval", "genename"}
+
 import gzip
 import os
 import sys
@@ -40,7 +43,9 @@ def generate_weights_file():
             return x
         header = None
         for k, line in enumerate(smart_open(source_file)):
-            if header is None:
+            if k == 0:
+                if not BETA_HEADER_TOKENS == set(line.strip().split()):
+                    raise RuntimeError("Invalid header. We no longer assume anything.")
                 header = line.strip().split()
             else:
                 yield dict(zip(header, map(upconvert, line.strip().split())))
@@ -99,8 +104,6 @@ def generate_weights_file():
             for db in self.dbs.values():
                 db.close()
 
-
-
     for source_file in source_files():
         print "Processing %s..."%source_file
         meta_db = MetaDB(source_file=source_file)
@@ -122,16 +125,12 @@ def add_extra_data():
 
         header = None
         for k, line in enumerate(smart_open(source_file)):
-            if header is None:
-                if 'gene' not in line: ## this is then not a header
-                    header = "gene    ensid   mean.cvm        var.cvm lambda.var      lambda.frac.diff        mean.lambda.iteration   lambda.min      n.snps  R2      alpha   pval".split()
-                else:
-                    header = line.strip().split() ## we expect: gene    alpha   cvm     lambda.iteration        lambda.min      n.snps  R2      pval    genename
+            if k == 0:
+                if not RESULTS_HEADER_TOKENS == set(line.strip().split()):
+                    raise RuntimeError("Invalid header. We no longer assume anything.")
+                header = line.strip().split()
             else:
-                if line.strip(): ###and 'gene' not in line: # some files, but not all, have a header
-                    ret = dict(zip(header, map(upconvert, line.strip().split())))
-                    if 'alpha' in ret:
-                        yield ret
+                yield dict(zip(header, map(upconvert, line.strip().split())))
 
     def source_files(source_dir=os.path.join(SOURCE_DIR,RESULTS_DIR)):
         "List all relevant source files"
@@ -164,11 +163,7 @@ def add_extra_data():
             self.connection.commit()
 
         def insert_row(self, row):
-            if 'genename' in row:
-                genename = row['genename']
-            else:
-                genename = row['gene']
-            self("INSERT INTO extra VALUES(?, ?, ?, ?)", (row['gene'], genename, row['R2'], row['n.snps']))
+            self("INSERT INTO extra VALUES(?, ?, ?, ?)", (row['gene'], row['genename'], row['R2'], row['n.snps']))
 
     class MetaDB:
         "This handles all the DBs for each source file (tissue type)"
