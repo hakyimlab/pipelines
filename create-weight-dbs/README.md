@@ -3,7 +3,8 @@
 ## Description
 Generates PredictDB sqlite dbs using weights calculated by generate-prediction-models. These dbs are used for gene expression prediction by PrediXcan and for gene-level association by MetaXcan.
 
-This takes all files in the input folder and creates dbs
+This takes all files in the input folder and creates dbs.
+
 ## Input files
 
 - `tissue-name.allBetas.txt.gz`: has the gene-rsid pairs with the corresponding weights (called beta here)
@@ -17,7 +18,7 @@ This takes all files in the input folder and creates dbs
   - `alpha` describes model (for now numeric = mixing parameter in Elastic Net)
   - additional columns are ignored
 
-- `tissue-name.allResults.txt`: has descriptiones of the model runs, CV performance (R2)
+- `tissue-name.allResults.txt`: has descriptions of the model runs, CV performance (R2)
 > gene    alpha   cvm     lambda.iteration        lambda.min      n.snps  R2      pval    genename
 
   - `gene` is a unique identifier such as ensid or other
