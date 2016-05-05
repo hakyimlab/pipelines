@@ -148,7 +148,7 @@ def add_extra_data():
 
             self("DROP INDEX IF EXISTS extra_gene")
             self("DROP TABLE IF EXISTS extra")
-            self("CREATE TABLE extra (gene TEXT, genename TEXT, R2 DOUBLE,  `n.snps` INTEGER)")
+            self("CREATE TABLE extra (gene TEXT, genename TEXT, R2 DOUBLE,  `n.snps` INTEGER, pval DOUBLE)")
             self("CREATE INDEX extra_gene ON extra (gene)")
 
 
@@ -163,7 +163,7 @@ def add_extra_data():
             self.connection.commit()
 
         def insert_row(self, row):
-            self("INSERT INTO extra VALUES(?, ?, ?, ?)", (row['gene'], row['genename'], row['R2'], row['n.snps']))
+            self("INSERT INTO extra VALUES(?, ?, ?, ?, ?)", (row['gene'], row['genename'], row['R2'], row['n.snps'], row['pval']))
 
     class MetaDB:
         "This handles all the DBs for each source file (tissue type)"
